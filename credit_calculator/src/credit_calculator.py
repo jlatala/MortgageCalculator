@@ -35,11 +35,11 @@ class CreditCalculator:
 
     @round_currency
     def get_total_principal(self):
-        return sum([i.principal for i in self.__installments])
+        return sum([i['principal'] for i in self.__installments])
 
     @round_currency
     def get_total_interest(self):
-        return sum([i.interest for i in self.__installments])
+        return sum([i['interest'] for i in self.__installments])
 
     def get_total_overpayment(self):
         return sum(self.__overpayments.values())

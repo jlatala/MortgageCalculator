@@ -5,7 +5,6 @@ from credit_calculator.src.fixed_credit import FixedCredit
 
 
 class TestCreditCalculator(unittest.TestCase):
-
     def setUp(self):
         self.cc1 = CreditCalculator()
 
@@ -58,7 +57,7 @@ class TestCreditCalculator(unittest.TestCase):
     def test_fixed_credit_overpay_decrease_loan_term(self):
         self.new_credit(FixedCredit)
         overpayments = {36: 50_000, 120: 30_000}
-        self.cc1.add_overpayment(overpayments, o_type='decrease_loan_term')
+        self.cc1.add_overpayment(overpayments, o_type="decrease_loan_term")
         self.cc1.calculate()
 
         self.assertEqual(self.cc1.get_total(), 713402.13)
@@ -70,7 +69,7 @@ class TestCreditCalculator(unittest.TestCase):
     def test_declining_credit_overpay_decrease_loan_term(self):
         self.new_credit(DecliningCredit)
         overpayments = {36: 50_000, 120: 30_000}
-        self.cc1.add_overpayment(overpayments, o_type='decrease_loan_term')
+        self.cc1.add_overpayment(overpayments, o_type="decrease_loan_term")
         self.cc1.calculate()
 
         self.assertEqual(self.cc1.get_total(), 695100)
@@ -80,5 +79,5 @@ class TestCreditCalculator(unittest.TestCase):
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

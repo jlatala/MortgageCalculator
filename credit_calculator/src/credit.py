@@ -14,20 +14,21 @@ class Credit(ABC):
 
         self.total_principal = 0
         self.total_interest = 0
-        self.total_overpayment = {
-            'decrease_installment': 0,
-            'decrease_loan_term': 0
-        }
+        self.total_overpayment = {"decrease_installment": 0, "decrease_loan_term": 0}
         self._overpayment = 0
         self.i_month = 0
 
     @property
     @round_currency
     def paid(self):
-        return self.total_principal + self.total_interest + sum(self.total_overpayment.values())
+        return (
+            self.total_principal
+            + self.total_interest
+            + sum(self.total_overpayment.values())
+        )
 
     def __next__(self):
-        overp = self.total_overpayment['decrease_loan_term']
+        overp = self.total_overpayment["decrease_loan_term"]
         capital = self.total_principal + overp
         if self.loan_amount - capital < 0.01:
             raise StopIteration
@@ -48,10 +49,10 @@ class Credit(ABC):
     def __iter__(self):
         return self
 
-    def overpay(self, amount, o_type='decrease_installment'):
+    def overpay(self, amount, o_type="decrease_installment"):
         self.total_overpayment[o_type] += amount
 
-        if o_type == 'decrease_loan_term':
+        if o_type == "decrease_loan_term":
             return self
 
         loan_amount = self.loan_amount - self.total_principal - amount
