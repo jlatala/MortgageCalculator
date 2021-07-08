@@ -15,7 +15,6 @@ class TestCreditCalculator(unittest.TestCase):
     def test_fixed_credit(self):
         self.new_credit(FixedCredit)
         self.cc1.calculate()
-        print(self.cc1.credit_df)
 
         self.assertEqual(self.cc1.get_total(), 791_755.26)
         self.assertEqual(self.cc1.get_total_principal(), 500_000)
@@ -36,7 +35,6 @@ class TestCreditCalculator(unittest.TestCase):
         overpayments = {36: 50_000, 120: 30_000}
         self.cc1.add_overpayment(overpayments)
         self.cc1.calculate()
-        print(self.cc1.credit_df)
 
         self.assertEqual(self.cc1.get_total(), 756548.22)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
