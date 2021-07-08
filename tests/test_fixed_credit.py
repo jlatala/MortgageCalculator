@@ -4,13 +4,13 @@ from credit_calculator.src.fixed_credit import FixedCredit
 
 
 class TestFixedCredit(unittest.TestCase):
-
     def setUp(self):
         self.c1 = FixedCredit(300_000, 360, 0.04)
 
     def test_all_totals(self):
-        self.assertEqual([i.get_rounded_total() for i in self.c1], [
-                         1432.25 for _ in range(360)])
+        self.assertEqual(
+            [i.get_rounded_total() for i in self.c1], [1432.25 for _ in range(360)]
+        )
 
     def test_paid(self):
         total_sum = sum([i.total for i in self.c1])
@@ -34,5 +34,5 @@ class TestFixedCredit(unittest.TestCase):
         self.assertEqual(next(self.c1).get_rounded_total(), 1432.25)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

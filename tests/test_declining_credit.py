@@ -4,7 +4,6 @@ from credit_calculator.src.declining_credit import DecliningCredit
 
 
 class TestDecliningCredit(unittest.TestCase):
-
     def setUp(self):
         self.c1 = DecliningCredit(300_000, 360, 0.04)
 
@@ -30,5 +29,5 @@ class TestDecliningCredit(unittest.TestCase):
             next(self.c1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

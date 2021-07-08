@@ -3,7 +3,6 @@ from credit_calculator.src.installment import Installment
 
 
 class TestInstallment(unittest.TestCase):
-
     def setUp(self):
         self.i1 = Installment(302.41, 212.01)
         self.i2 = Installment(105, 400.4)
@@ -27,16 +26,15 @@ class TestInstallment(unittest.TestCase):
         self.assertEqual(sum(i_list), 11019.81)
 
     def test_repr(self):
-        self.assertEqual(repr(self.i1), 'Installment(302.41, 212.01)')
+        self.assertEqual(repr(self.i1), "Installment(302.41, 212.01)")
 
     def test_str(self):
-        self.assertEqual(
-            str(self.i2), 'total=505.40; principal=105.00; interest=400.40')
+        self.assertEqual(str(self.i2), "total=505.40; principal=105.00; interest=400.40")
 
     def test_total_property(self):
         self.assertEqual(self.i1.get_rounded_total(), 514.42)
         self.assertEqual(self.i2.get_rounded_total(), 505.40)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
