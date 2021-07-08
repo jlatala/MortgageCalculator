@@ -15,11 +15,12 @@ class TestCreditCalculator(unittest.TestCase):
     def test_fixed_credit(self):
         self.new_credit(FixedCredit)
         self.cc1.calculate()
+        print(self.cc1.credit_df)
 
         self.assertEqual(self.cc1.get_total(), 791_755.26)
         self.assertEqual(self.cc1.get_total_principal(), 500_000)
         self.assertEqual(self.cc1.get_total_interest(), 291_755.26)
-        self.assertEqual(len(self.cc1.get_installments()), 300)
+        self.assertEqual(self.cc1.get_number_of_installments(), 300)
 
     def test_declining_credit(self):
         self.new_credit(DecliningCredit)
@@ -28,18 +29,19 @@ class TestCreditCalculator(unittest.TestCase):
         self.assertEqual(self.cc1.get_total(), 750_833.33)
         self.assertEqual(self.cc1.get_total_principal(), 500_000)
         self.assertEqual(self.cc1.get_total_interest(), 250_833.33)
-        self.assertEqual(len(self.cc1.get_installments()), 300)
+        self.assertEqual(self.cc1.get_number_of_installments(), 300)
 
     def test_fixed_credit_overpay_decrease_installment(self):
         self.new_credit(FixedCredit)
         overpayments = {36: 50_000, 120: 30_000}
         self.cc1.add_overpayment(overpayments)
         self.cc1.calculate()
+        print(self.cc1.credit_df)
 
         self.assertEqual(self.cc1.get_total(), 756548.22)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
         self.assertEqual(self.cc1.get_total_interest(), 256548.22)
-        self.assertEqual(len(self.cc1.get_installments()), 300)
+        self.assertEqual(self.cc1.get_number_of_installments(), 300)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
     def test_declining_credit_overpay_decrease_installment(self):
@@ -51,7 +53,7 @@ class TestCreditCalculator(unittest.TestCase):
         self.assertEqual(self.cc1.get_total(), 719_700)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
         self.assertEqual(self.cc1.get_total_interest(), 219_700)
-        self.assertEqual(len(self.cc1.get_installments()), 300)
+        self.assertEqual(self.cc1.get_number_of_installments(), 300)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
     def test_fixed_credit_overpay_decrease_loan_term(self):
@@ -63,7 +65,7 @@ class TestCreditCalculator(unittest.TestCase):
         self.assertEqual(self.cc1.get_total(), 713402.13)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
         self.assertEqual(self.cc1.get_total_interest(), 213402.13)
-        self.assertEqual(len(self.cc1.get_installments()), 240)
+        self.assertEqual(self.cc1.get_number_of_installments(), 240)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
     def test_declining_credit_overpay_decrease_loan_term(self):
@@ -75,7 +77,7 @@ class TestCreditCalculator(unittest.TestCase):
         self.assertEqual(self.cc1.get_total(), 695100)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
         self.assertEqual(self.cc1.get_total_interest(), 195100)
-        self.assertEqual(len(self.cc1.get_installments()), 252)
+        self.assertEqual(self.cc1.get_number_of_installments(), 252)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
 
