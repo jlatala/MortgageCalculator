@@ -11,12 +11,13 @@ cc = CreditCalculator()
 @app.callback(
     Output("bar-chart", "figure"),
     Output("pie-chart", "figure"),
+    Output("df-table", "data"),
     Input("submit-button", "n_clicks"),
     State("loan", "value"),
     State("years", "value"),
-    State("interest_rate", "value"),
+    State("interest-rate", "value"),
 )
-def callback_a(n_clicks, loan, years, interest_rate):
+def update_figures(n_clicks, loan, years, interest_rate):
     credit = FixedCredit(loan, years * 12, interest_rate)
     cc.new_credit(credit)
     cc.add_overpayment({36 + i: 1000 for i in range(24)})
@@ -29,4 +30,4 @@ def callback_a(n_clicks, loan, years, interest_rate):
     pie_fig = px.pie(df.sum(), values=0)
     pie_fig.update_layout(transition_duration=1000)
 
-    return bar_fig, pie_fig
+    return bar_fig, pie_fig, df.to_dict(orient="records")
