@@ -6,29 +6,25 @@ class CreditCalculator:
     def __init__(self):
         self.__credit = None
         self.__overpayments = {}
-        self.__installments = None
         self.__overpayment_type = None
 
     def new_credit(self, credit):
         self.__credit = credit
-        self.__installments = []
-        self.credit_df = None
+        self.credit_df = pd.DataFrame(columns=["principal", "interest", "overpayment"])
 
     def add_overpayment(self, overpayment, o_type="decrease_installment"):
         self.__overpayments.update(overpayment)
         self.__overpayment_type = o_type
 
     def calculate(self, init_month=1):
-        # for month, installment in enumerate(self.__credit, start=init_month):
-        #     self.__installments.append(installment)
-        #     if month in self.__overpayments:
-        #         amount = self.__overpayments[month]
-        #         self.__credit = self.__credit.overpay(
-        #             amount, self.__overpayment_type)
-        #         self.calculate(month + 1)
-        #         break
-
-        self.credit_df = pd.DataFrame(self.__credit)
+        for month, installment in enumerate(self.__credit, start=init_month):
+            self.credit_df = self.credit_df.append(installment, ignore_index=True)
+            if month in self.__overpayments:
+                amount = self.__overpayments[month]
+                self.credit_df.iloc[-1]["overpayment"] = amount
+                self.__credit = self.__credit.overpay(amount, self.__overpayment_type)
+                self.calculate(month + 1)
+                break
 
     def get_number_of_installments(self):
         return len(self.credit_df)
