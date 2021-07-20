@@ -1,5 +1,7 @@
 import pandas as pd
 from copy import copy
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from .utils import round_currency
 
 
@@ -30,6 +32,18 @@ class CreditCalculator:
                 self.credit = self.credit.overpay(amount, self.__overpayment_type)
                 self.calculate(month + 1)
                 break
+
+        self.set_dates_as_index()
+
+    def set_dates_as_index(self, start_date=None):
+        if start_date is None:
+            start_date = date.today()
+
+        n_rows = len(self.credit_df)
+        self.credit_df["date"] = [
+            start_date + relativedelta(months=+i) for i in range(n_rows)
+        ]
+        self.credit_df = self.credit_df.set_index("date")
 
     def get_number_of_installments(self):
         return len(self.credit_df)
