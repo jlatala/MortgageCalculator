@@ -1,0 +1,106 @@
+input[type=number] {
+  border: none;
+  border-bottom: 1px solid #002419;  
+  height: 30px; 
+  margin-left: 10px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 70;
+  left: 0;
+  width: 23rem;
+  padding: 1rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.content {
+  margin-left: 23em;
+  padding: 1rem 1rem;
+}
+
+.tabs {
+  border-top-left-radius: 3px;
+  background-color: #f9f9f9;
+  padding: 0px 24px;
+  /* border-bottom: 1px solid #d6d6d6; */
+}
+
+.tab {
+  color:#586069;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top: 3px solid transparent !important;
+  border-left: 0px !important;
+  border-right: 0px !important;
+  border-bottom: 0px !important;
+  background-color: #fafbfc;
+  padding: 8px !important;
+  font-family: "system-ui";
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.tab--selected {
+  color: black;
+  box-shadow: 1px 1px 0px white;
+  border-left: 1px solid lightgrey !important;
+  border-right: 1px solid lightgrey !important;
+  border-top: 3px solid #00251a !important;
+}
+
+.rc-slider-track {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  border-radius: 6px;
+  background-color: #81bdb0;
+}
+.rc-slider-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  margin-top: -5px;
+  cursor: grab;
+  border-radius: 50%;
+  border: solid 2px #539486;
+  background-color: #fff;
+  -ms-touch-action: pan-x;
+      touch-action: pan-x;
+}
+.rc-slider-handle:focus {
+  border-color: #39796b;
+  box-shadow: 0 0 0 5px #539486;
+  outline: none;
+}
+.rc-slider-handle-click-focused:focus {
+  border-color: #539486;
+  box-shadow: unset;
+}
+.rc-slider-handle:hover {
+  border-color: #39796b;
+}
+.rc-slider-handle:active {
+  border-color: #39796b;
+  box-shadow: 0 0 5px #39796b;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.rc-slider-dot-active {
+  border-color: #539486;
+}
+
+#overpayments-text {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 1rem;
+}
+
+#credit-type-text {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 1rem;
+}
