@@ -117,7 +117,7 @@ def calculate_mortgage(
     print(5)
     cc.calculate()
 
-    return cc.credit_df.to_dict()
+    return None
 
 
 def get_new_credit(loan_type, loan, years, interest_rate):
@@ -141,9 +141,14 @@ def add_monthly_overpayment(n_months, amount, overpay_type):
     Output("overpay-dates-dropdown", "options"),
     Output("overpay-dates-dropdown", "value"),
     Input("credit-memory", "data"),
+    State("overpay-dates-dropdown", "value"),
 )
-def fill_in_dropdown_with_dates(data):
-    df = pd.DataFrame(data)
-    options = [{"label": f"month {int(date)+1}", "value": date} for date in df.index]
+def fill_in_dropdown_with_dates(data, dropdown_value):
+    df = cc.credit_df
+    options = [
+        {"label": f"month {int(i)+1}", "value": date} for i, date in enumerate(df.index)
+    ]
 
-    return options, options[0]["value"]
+    if dropdown_value is None:
+        return options, options[0]["value"]
+    return options, dropdown_value
