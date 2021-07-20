@@ -16,3 +16,6 @@ class FixedCredit(Credit):
             principal += self.loan_amount - capital - principal
 
         return principal, interest
+
+    def __copy__(self):
+        return FixedCredit(self.loan_amount, self.n_installments, self.interest_rate, self.currency)

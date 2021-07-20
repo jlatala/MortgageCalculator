@@ -18,6 +18,10 @@ class Credit(ABC):
         self._overpayment = 0
         self.i_month = 0
 
+    @abstractmethod
+    def __copy__(self):
+        pass
+
     @property
     @round_currency
     def paid(self):
