@@ -3,35 +3,32 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash_table import DataTable, FormatTemplate
 
+
 NAVBAR_STYLE = {"font-size": "40px"}
-
-SIDEBAR_STYLE = {
-    "position": "fixed",
-    "top": 70,
-    "left": 0,
-    "bottom": 0,
-    "width": "16rem",
-    "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
-}
-
-CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-}
 
 navbar = dbc.NavbarSimple(
     brand="Mortgage Calculator",
     brand_href="#",
     brand_style=NAVBAR_STYLE,
-    color="primary",
+    color="#004d40",
     dark=True,
     sticky="top",
 )
 
-sidebar = html.Div(
-    [
+basic_tab = dcc.Tab(
+    label="Basic",
+    value="tab-basic",
+    children=[
+        html.P(children="Credit type", className="lead", id="credit-type-text"),
+        dcc.RadioItems(
+            id="loan-type-radio",
+            options=[
+                {"label": " fixed installment", "value": "fixed"},
+                {"label": " declining installment", "value": "declining"},
+            ],
+            value="fixed",
+        ),
+        html.Hr(),
         html.P(id="loan-text", className="lead"),
         dcc.Slider(
             id="loan-slider",
@@ -53,36 +50,120 @@ sidebar = html.Div(
         ),
         html.Hr(),
         html.P(id="interest-rate-text", className="lead"),
-        dcc.Input(
-            id="interest-rate",
-            type="number",
-            min=0,
-            max=100,
-            step=0.01,
+        dcc.Slider(
+            id="interest-rate-slider",
+            min=0.1,
+            max=20,
+            step=0.1,
             value=5,
-            placeholder="interest rate",
+            marks={x: f"{x}%" for x in [0.1, 5, 10, 15, 20]},
         ),
-        html.Hr(),
-        html.Button(id="submit-button", n_clicks=0, children="Submit"),
     ],
-    style=SIDEBAR_STYLE,
+    className="tab",
 )
 
-content = html.Div(id="page-content", style=CONTENT_STYLE)
+advanced_tab = dcc.Tab(
+    label="Advanced",
+    value="tab-advanced",
+    children=[
+        html.P(children="Overpayments", className="lead", id="overpayments-text"),
+        dcc.RadioItems(
+            id="overpay-behavior-radio",
+            options=[
+                {"label": " decrease loan term", "value": "decrease_loan_term"},
+                {"label": " decrease installment", "value": "decrease_installment"},
+            ],
+            value="decrease_loan_term",
+        ),
+        html.Hr(),
+        html.Div(
+            className="lead",
+            style={"display": "flex"},
+            children=[
+                html.P(children="Pay extra", className="lead"),
+                dcc.Input(
+                    id="monthly-overpayment-input",
+                    type="number",
+                    min=0,
+                    max=1_000_000,
+                    step=1,
+                    value=0,
+                    debounce=True,
+                ),
+                html.P(
+                    children="$ monthly", className="lead", style={"margin-left": "5px"}
+                ),
+            ],
+        ),
+        html.Hr(),
+        html.Div(
+            className="row",
+            style={"display": "flex", "margin-left": "1rem"},
+            children=[
+                html.P(
+                    children="Single overpayment",
+                    className="lead",
+                    style={"margin-left": "0px"},
+                ),
+                dcc.Input(
+                    id="single-overpayment-input",
+                    type="number",
+                    min=0,
+                    max=1_000_000,
+                    step=1,
+                    value=0,
+                    debounce=True,
+                ),
+                html.P(children="$", className="lead", style={"margin-left": "5px"}),
+            ],
+        ),
+        html.Div(
+            className="row",
+            style={"display": "flex", "margin-left": "1rem"},
+            children=[
+                dcc.Dropdown(id="overpay-dates-dropdown", style={"width": "120px"}),
+                html.Button("Add", id="add-overpayment-button", n_clicks=0),
+            ],
+        ),
+    ],
+)
 
-money_format = FormatTemplate.money(2)
+sidebar = html.Div(
+    [
+        dcc.Tabs(
+            id="settings-tabs",
+            value="tab-basic",
+            children=[
+                basic_tab,
+                advanced_tab,
+            ],
+            className="tabs",
+        ),
+    ],
+    className="sidebar",
+)
 
-content.children = [
-    dcc.Graph(id="bar-chart"),
-    dcc.Graph(id="pie-chart"),
-    DataTable(
-        id="df-table",
-        columns=[
-            {"name": col, "id": col, "type": "numeric", "format": money_format}
-            for col in ["principal", "interest", "overpayment", "total"]
-        ],
-    ),
-]
+
+content = html.Div(
+    [
+        dcc.Store(id="credit-memory"),
+        dcc.Graph(id="bar-chart"),
+        dcc.Graph(id="pie-chart"),
+        DataTable(
+            id="df-table",
+            columns=[
+                {
+                    "name": col,
+                    "id": col,
+                    "type": "numeric",
+                    "format": FormatTemplate.money(2),
+                }
+                for col in ["principal", "interest", "overpayment", "total"]
+            ],
+        ),
+    ],
+    className="content",
+)
 
 
 def get_layout():
