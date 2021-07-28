@@ -17,7 +17,7 @@ navbar = dbc.NavbarSimple(
 
 basic_tab = dcc.Tab(
     label="Basic",
-    value="tab-basic",
+    value="basic-tab",
     children=[
         html.P(children="Credit type", className="lead", id="credit-type-text"),
         dcc.RadioItems(
@@ -27,9 +27,10 @@ basic_tab = dcc.Tab(
                 {"label": " declining installment", "value": "declining"},
             ],
             value="fixed",
+            style={"margin-left": "1rem"},
         ),
         html.Hr(),
-        html.P(id="loan-text", className="lead"),
+        html.P(id="loan-text", className="lead", style={"margin-left": "1rem"}),
         dcc.Slider(
             id="loan-slider",
             min=50_000,
@@ -39,7 +40,7 @@ basic_tab = dcc.Tab(
             marks={50_000: "50k", 500_000: "500k", 1_000_000: "1M", 1_500_000: "1.5M"},
         ),
         html.Hr(),
-        html.P(id="loan-term-text", className="lead"),
+        html.P(id="loan-term-text", className="lead", style={"margin-left": "1rem"}),
         dcc.Slider(
             id="loan-term-slider",
             min=1,
@@ -49,7 +50,7 @@ basic_tab = dcc.Tab(
             marks={x: str(x) for x in [1, 10, 20, 30, 40]},
         ),
         html.Hr(),
-        html.P(id="interest-rate-text", className="lead"),
+        html.P(id="interest-rate-text", className="lead", style={"margin-left": "1rem"}),
         dcc.Slider(
             id="interest-rate-slider",
             min=0.1,
@@ -64,7 +65,7 @@ basic_tab = dcc.Tab(
 
 advanced_tab = dcc.Tab(
     label="Advanced",
-    value="tab-advanced",
+    value="advanced-tab",
     children=[
         html.P(children="Overpayments", className="lead", id="overpayments-text"),
         dcc.RadioItems(
@@ -78,7 +79,7 @@ advanced_tab = dcc.Tab(
         html.Hr(),
         html.Div(
             className="lead",
-            style={"display": "flex"},
+            style={"display": "flex", "margin-left": "1rem"},
             children=[
                 html.P(children="Pay extra", className="lead"),
                 dcc.Input(
@@ -132,7 +133,7 @@ sidebar = html.Div(
     [
         dcc.Tabs(
             id="settings-tabs",
-            value="tab-basic",
+            value="basic-tab",
             children=[
                 basic_tab,
                 advanced_tab,
@@ -144,23 +145,73 @@ sidebar = html.Div(
 )
 
 
-content = html.Div(
+datatable_columns = [{"name": "date", "id": "date", "type": "text"}]
+datatable_columns.extend(
     [
-        dcc.Store(id="credit-memory"),
+        {
+            "name": col,
+            "id": col,
+            "type": "numeric",
+            "format": FormatTemplate.money(2),
+        }
+        for col in ["principal", "interest", "overpayment", "total"]
+    ]
+)
+
+summary_tab = dcc.Tab(
+    label="Summary",
+    value="summary-tab",
+    children=[
+        html.H2(
+            id="summary-heading-text",
+            # className="lead",
+            # style={"margin-left": "0px"},
+        ),
+        html.P(
+            id="summary-info-text",
+            className="lead",
+            style={"margin-left": "1.5rem"},
+        ),
+    ],
+    className="tab",
+)
+
+chart_tab = dcc.Tab(
+    label="Charts",
+    value="chart-tab",
+    children=[
         dcc.Graph(id="bar-chart"),
         dcc.Graph(id="pie-chart"),
+    ],
+    className="tab",
+)
+
+table_tab = dcc.Tab(
+    label="Schedule",
+    value="table-tab",
+    children=[
         DataTable(
             id="df-table",
-            columns=[
-                {
-                    "name": col,
-                    "id": col,
-                    "type": "numeric",
-                    "format": FormatTemplate.money(2),
-                }
-                for col in ["principal", "interest", "overpayment", "total"]
-            ],
+            columns=datatable_columns,
+            # style_as_list_view=True,
         ),
+    ],
+    className="tab",
+)
+
+content = html.Div(
+    [
+        dcc.Tabs(
+            id="content-tabs",
+            value="summary-tab",
+            children=[
+                summary_tab,
+                chart_tab,
+                table_tab,
+            ],
+            className="tabs",
+        ),
+        dcc.Store(id="credit-memory"),
     ],
     className="content",
 )
