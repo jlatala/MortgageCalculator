@@ -1,39 +1,118 @@
 from typing import Type
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import dash
+import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
+from plotly.subplots import make_subplots
 from credit_calculator.web.app import app
 from credit_calculator.src.credit_calculator import CreditCalculator
 from credit_calculator.src.fixed_credit import FixedCredit
 from credit_calculator.src.declining_credit import DecliningCredit
 
 
-cc = CreditCalculator()
+COLOR_MAP = {
+    "principal": "#1F77B4",
+    "interest": "#FF7F0E",
+    "overpayment": "#2CA02C",
+}
+
+
+@app.callback(
+    Output("summary-heading-text", "children"),
+    Input("credit-memory", "data"),
+)
+def update_summary(data):
+    df = pd.DataFrame.from_dict(data)
+    df.index = pd.DatetimeIndex(df.index)
+    installment = df.iloc[0].sum()
+    summary = [f"Your monthly payment {installment:,.2f}$"]
+
+    return summary
+
+
+@app.callback(
+    Output("summary-info-text", "children"),
+    Input("credit-memory", "data"),
+)
+def update_summary(data):
+    df = pd.DataFrame.from_dict(data)
+    df.index = pd.DatetimeIndex(df.index)
+    payoff_date = df.index[-1]
+    total_principal = df["principal"].sum() + df["overpayment"].sum()
+    total_interest = df["interest"].sum()
+    total = sum(df.sum())
+    summary = [f"Payoff date {payoff_date:%d-%m-%Y}"]
+    summary.append(html.Br())
+    summary += [f"Total principal paid {round(total_principal):,}$"]
+    summary.append(html.Br())
+    summary += [f"Total interest paid {round(total_interest):,}$"]
+    summary.append(html.Br())
+    summary += [f"Total paid {round(total):,}$"]
+
+    return summary
 
 
 @app.callback(
     Output("bar-chart", "figure"),
     Output("pie-chart", "figure"),
-    Output("df-table", "data"),
     Input("credit-memory", "data"),
     State("loan-slider", "value"),
     State("loan-term-slider", "value"),
     State("interest-rate-slider", "value"),
 )
 def update_figures(data, loan, years, interest_rate):
-    df = pd.DataFrame(data)
+    df = pd.DataFrame.from_dict(data)
+    df.index = pd.DatetimeIndex(df.index)
+    df = df[["principal", "interest", "overpayment"]]
 
-    bar_fig = px.bar(df, barmode="group")
-    bar_fig.update_layout(transition_duration=500)
+    area_fig = px.area(
+        df,
+        labels={"date": "years", "value": "amount [$]"},
+        template="simple_white",
+        color_discrete_map=COLOR_MAP,
+    )
+    area_fig.update_layout(transition_duration=500)
+    area_fig.update_xaxes(type="date")
+    area_fig.update_yaxes(secondary_y=True)
+    area_fig.update_traces(
+        hovertemplate="date: %{x} <br>value: %{y:,.2f}$",
+    )
 
-    pie_fig = px.pie(df.sum(), values=0)
+    pie_fig = px.pie(
+        df.sum().to_frame().transpose(),
+        names=df.columns,
+        values=df.sum(),
+        color=df.columns,
+        color_discrete_map=COLOR_MAP,
+        opacity=0.7,
+        hole=0.6,
+    )
     pie_fig.update_layout(transition_duration=1000)
+    pie_fig.update_traces(
+        hovertemplate="Total: %{value:,.2f}$",
+        textinfo="percent+label",
+        textfont_size=20,
+        marker=dict(line=dict(color="#FFFFFF", width=3)),
+    )
 
+    return area_fig, pie_fig
+
+
+@app.callback(
+    Output("df-table", "data"),
+    Input("credit-memory", "data"),
+)
+def update_table(data):
+    df = pd.DataFrame.from_dict(data)
+    df.index = pd.DatetimeIndex(df.index)
     df["total"] = df.sum(axis=1)
+    df.reset_index(inplace=True)
+    df.rename(columns={"index": "date"}, inplace=True)
+    df["date"] = df["date"].dt.strftime("%b %Y")
 
-    return bar_fig, pie_fig, df.to_dict(orient="records")
+    return df.to_dict(orient="records")
 
 
 @app.callback(
@@ -86,8 +165,8 @@ def calculate_mortgage(
     single_overpay_month,
     single_overpay_amount,
 ):
+    cc = CreditCalculator()
     trigger = dash.callback_context.triggered[0]["prop_id"]
-    print(dash.callback_context.triggered)
     if (
         trigger
         in [
@@ -98,26 +177,24 @@ def calculate_mortgage(
         ]
         or cc.credit is None
     ):
-        print(1)
         credit = get_new_credit(loan_type, loan, years, interest_rate)
         cc.new_credit(credit)
     else:
-        print(2)
         cc.reset_credit()
-
     if trigger in ["monthly-overpayment-input.value", "overpay-behavior-radio.value"]:
-        print(3)
-        add_monthly_overpayment(
-            cc.credit.n_installments, monthly_overpay_amount, overpay_type
-        )
+        add_monthly_overpayment(cc, monthly_overpay_amount, overpay_type)
     if trigger == "add-overpayment-button.n_clicks":
-        print(4)
-        add_single_overpayment(single_overpay_month, single_overpay_amount, overpay_type)
+        add_single_overpayment(
+            cc, single_overpay_month, single_overpay_amount, overpay_type
+        )
 
-    print(5)
     cc.calculate()
 
-    return None
+    cc.credit_df.reset_index(inplace=True)
+    cc.credit_df["date"] = cc.credit_df["date"].apply(str)
+    cc.credit_df.set_index("date", inplace=True)
+
+    return cc.credit_df.to_dict()
 
 
 def get_new_credit(loan_type, loan, years, interest_rate):
@@ -127,14 +204,14 @@ def get_new_credit(loan_type, loan, years, interest_rate):
         return DecliningCredit(loan, years * 12, interest_rate / 100)
 
 
-def add_single_overpayment(month, amount, overpay_type):
+def add_monthly_overpayment(calculator, amount, overpay_type):
+    for i in range(calculator.credit.n_installments):
+        calculator.add_overpayment({i: amount}, overpay_type)
+
+
+def add_single_overpayment(calculator, month, amount, overpay_type):
     if month is not None:
-        cc.add_overpayment({int(month): amount}, overpay_type)
-
-
-def add_monthly_overpayment(n_months, amount, overpay_type):
-    for i in range(n_months):
-        cc.add_overpayment({i: amount}, overpay_type)
+        calculator.add_overpayment({month: amount}, overpay_type)
 
 
 @app.callback(
@@ -144,10 +221,9 @@ def add_monthly_overpayment(n_months, amount, overpay_type):
     State("overpay-dates-dropdown", "value"),
 )
 def fill_in_dropdown_with_dates(data, dropdown_value):
-    df = cc.credit_df
-    options = [
-        {"label": f"month {int(i)+1}", "value": date} for i, date in enumerate(df.index)
-    ]
+    df = pd.DataFrame.from_dict(data)
+    df.index = pd.DatetimeIndex(df.index)
+    options = [{"label": f"{date:%b %Y}", "value": i} for i, date in enumerate(df.index)]
 
     if dropdown_value is None:
         return options, options[0]["value"]
