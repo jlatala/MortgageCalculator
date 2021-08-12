@@ -43,7 +43,13 @@ def update_summary(data):
     total_principal = df["principal"].sum() + df["overpayment"].sum()
     total_interest = df["interest"].sum()
     total = sum(df.sum())
-    summary = [f"Payoff date {payoff_date:%d-%m-%Y}"]
+    n_payments = len(df.index)
+    years = n_payments // 12
+    months = n_payments % 12
+    duration = f"{years} years" if years else ""
+    duration += ", " if years and months else ""
+    duration += f"{months} months" if months else ""
+    summary = [f"Payoff date {payoff_date:%d-%m-%Y} ({duration})"]
     summary.append(html.Br())
     summary += [f"Total principal paid {round(total_principal):,}$"]
     summary.append(html.Br())
