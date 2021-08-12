@@ -19,15 +19,14 @@ basic_tab = dcc.Tab(
     label="Basic",
     value="basic-tab",
     children=[
-        html.P(children="Credit type", className="lead", id="credit-type-text"),
+        html.P(children="Installment type", className="lead", id="credit-type-text"),
         dcc.RadioItems(
             id="loan-type-radio",
             options=[
-                {"label": " fixed installment", "value": "fixed"},
-                {"label": " declining installment", "value": "declining"},
+                {"label": "fixed", "value": "fixed"},
+                {"label": "declining", "value": "declining"},
             ],
             value="fixed",
-            style={"margin-left": "1rem"},
         ),
         html.Hr(),
         html.P(id="loan-text", className="lead", style={"margin-left": "1rem"}),
@@ -67,12 +66,14 @@ advanced_tab = dcc.Tab(
     label="Advanced",
     value="advanced-tab",
     children=[
-        html.P(children="Overpayments", className="lead", id="overpayments-text"),
+        html.P(
+            children="Overpayments decrease", className="lead", id="overpayments-text"
+        ),
         dcc.RadioItems(
             id="overpay-behavior-radio",
             options=[
-                {"label": " decrease loan term", "value": "decrease_loan_term"},
-                {"label": " decrease installment", "value": "decrease_installment"},
+                {"label": "loan term", "value": "decrease_loan_term"},
+                {"label": "installment", "value": "decrease_installment"},
             ],
             value="decrease_loan_term",
         ),
