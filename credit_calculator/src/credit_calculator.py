@@ -1,6 +1,6 @@
 import pandas as pd
 from copy import copy
-from datetime import date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from .utils import round_currency
 
@@ -8,6 +8,7 @@ from .utils import round_currency
 class CreditCalculator:
     def __init__(self):
         self.credit = None
+        self.credit_df = None
         self.__overpayments = {}
         self.__overpayment_type = None
 
@@ -23,7 +24,7 @@ class CreditCalculator:
         self.__overpayments.update(overpayment)
         self.__overpayment_type = o_type
 
-    def calculate(self, init_month=1):
+    def calculate(self, init_month=0):
         for month, installment in enumerate(self.credit, start=init_month):
             self.credit_df = self.credit_df.append(installment, ignore_index=True)
             if month in self.__overpayments:
@@ -37,7 +38,8 @@ class CreditCalculator:
 
     def set_dates_as_index(self, start_date=None):
         if start_date is None:
-            start_date = date.today()
+            start_date = datetime.today()
+            start_date += relativedelta(months=+1)
 
         n_rows = len(self.credit_df)
         self.credit_df["date"] = [
