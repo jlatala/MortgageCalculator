@@ -29,7 +29,10 @@ class TestInstallment(unittest.TestCase):
         self.assertEqual(repr(self.i1), "Installment(302.41, 212.01, 0.0)")
 
     def test_str(self):
-        self.assertEqual(str(self.i2), "total=605.40; principal=105.00; interest=400.40; overpayment=100.00")
+        self.assertEqual(
+            str(self.i2),
+            "total=605.40; principal=105.00; interest=400.40; overpayment=100.00",
+        )
 
     def test_total_property(self):
         self.assertEqual(self.i1.get_rounded_total(), 514.42)

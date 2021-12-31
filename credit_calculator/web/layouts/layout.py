@@ -49,7 +49,9 @@ basic_tab = dcc.Tab(
             marks={x: str(x) for x in [1, 10, 20, 30, 40]},
         ),
         html.Hr(),
-        html.P(id="interest-rate-text", className="lead", style={"margin-left": "1rem"}),
+        html.P(
+            id="interest-rate-text", className="lead", style={"margin-left": "1rem"}
+        ),
         dcc.Slider(
             id="interest-rate-slider",
             min=0.1,

@@ -229,7 +229,9 @@ def add_single_overpayment(calculator, month, amount, overpay_type):
 def fill_in_dropdown_with_dates(data, dropdown_value):
     df = pd.DataFrame.from_dict(data)
     df.index = pd.DatetimeIndex(df.index)
-    options = [{"label": f"{date:%b %Y}", "value": i} for i, date in enumerate(df.index)]
+    options = [
+        {"label": f"{date:%b %Y}", "value": i} for i, date in enumerate(df.index)
+    ]
 
     if dropdown_value is None:
         return options, options[0]["value"]
