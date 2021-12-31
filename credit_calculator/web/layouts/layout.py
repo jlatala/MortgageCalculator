@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
-from dash_table import DataTable, FormatTemplate
+from dash import dcc
+from dash import html
+from dash.dash_table import DataTable, FormatTemplate
 
 
 NAVBAR_STYLE = {"font-size": "40px"}
