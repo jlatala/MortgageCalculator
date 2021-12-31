@@ -9,6 +9,9 @@ This is web application that calculates payment schedule for mortgage loan.
 - make extra payments mounthy or for given months
 - select whether extra payments should decrease loan term or installment
 ## Screenshots
+Example:
+- 300,000$ for 20 years with 5% interest rate
+- 400$ as extra payment every month to decrease loan term
 ### Mortgage loan summary
 ![Screenshot](/screenshots/summary.PNG?raw=true "Mortgage loan summary")
 ### Charts
