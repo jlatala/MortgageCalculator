@@ -28,7 +28,15 @@ class CreditCalculator:
         for month, installment in enumerate(self.credit, start=init_month):
             self.credit_df = self.credit_df.append(installment, ignore_index=True)
             if month in self.__overpayments:
+                total_capital_paid = (
+                    self.get_total_principal() + self.get_total_overpayment()
+                )
+                left_to_pay = self.credit.loan_amount - total_capital_paid
                 amount = self.__overpayments[month]
+                if self.__overpayment_type == "decrease_loan_term":
+                    amount = min(amount, left_to_pay)
+                else:
+                    amount = amount if self.credit.n_installments > 1 else 0.0
                 self.credit_df.iloc[-1]["overpayment"] = amount
                 self.credit = self.credit.overpay(amount, self.__overpayment_type)
                 self.calculate(month + 1)
