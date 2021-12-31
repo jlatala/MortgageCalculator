@@ -36,9 +36,9 @@ class TestCreditCalculator(unittest.TestCase):
         self.cc1.add_overpayment(overpayments)
         self.cc1.calculate()
 
-        self.assertEqual(self.cc1.get_total(), 756548.22)
+        self.assertEqual(self.cc1.get_total(), 756_715.14)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
-        self.assertEqual(self.cc1.get_total_interest(), 256548.22)
+        self.assertEqual(self.cc1.get_total_interest(), 256715.14)
         self.assertEqual(self.cc1.get_number_of_installments(), 300)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
@@ -48,9 +48,9 @@ class TestCreditCalculator(unittest.TestCase):
         self.cc1.add_overpayment(overpayments)
         self.cc1.calculate()
 
-        self.assertEqual(self.cc1.get_total(), 719_700)
+        self.assertEqual(self.cc1.get_total(), 719_833.33)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
-        self.assertEqual(self.cc1.get_total_interest(), 219_700)
+        self.assertEqual(self.cc1.get_total_interest(), 219_833.33)
         self.assertEqual(self.cc1.get_number_of_installments(), 300)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
@@ -60,10 +60,10 @@ class TestCreditCalculator(unittest.TestCase):
         self.cc1.add_overpayment(overpayments, o_type="decrease_loan_term")
         self.cc1.calculate()
 
-        self.assertEqual(self.cc1.get_total(), 713402.13)
+        self.assertEqual(self.cc1.get_total(), 713_879.81)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
-        self.assertEqual(self.cc1.get_total_interest(), 213402.13)
-        self.assertEqual(self.cc1.get_number_of_installments(), 240)
+        self.assertEqual(self.cc1.get_total_interest(), 213_879.81)
+        self.assertEqual(self.cc1.get_number_of_installments(), 241)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
     def test_declining_credit_overpay_decrease_loan_term(self):
@@ -72,9 +72,9 @@ class TestCreditCalculator(unittest.TestCase):
         self.cc1.add_overpayment(overpayments, o_type="decrease_loan_term")
         self.cc1.calculate()
 
-        self.assertEqual(self.cc1.get_total(), 695100)
+        self.assertEqual(self.cc1.get_total(), 695_366.67)
         self.assertEqual(self.cc1.get_total_principal(), 420_000)
-        self.assertEqual(self.cc1.get_total_interest(), 195100)
+        self.assertEqual(self.cc1.get_total_interest(), 195_366.67)
         self.assertEqual(self.cc1.get_number_of_installments(), 252)
         self.assertEqual(self.cc1.get_total_overpayment(), 80_000)
 
