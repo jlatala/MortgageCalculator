@@ -10,12 +10,11 @@ This is web application that calculates payment schedule for mortgage loan.
 - select whether extra payments should decrease loan term or installment
 ## Screenshots
 ### Mortgage loan summary
-![Screenshot](/../<screenshot>/summary.png?raw=true "Mortgage loan summary")
-![Screenshot](/screenshots/summary.png)
+![Screenshot](/screenshots/summary.PNG?raw=true "Mortgage loan summary")
 ### Charts
-![Screenshot](/screenshots/charts.png)
+![Screenshot](/screenshots/charts.PNG?raw=true "Charts")
 ### Payment schedule
-![Screenshot](/screenshots/schedule.png)
+![Screenshot](/screenshots/schedule.PNG?raw=true "Payment schedule")
 ## Installation
 Install with pip:
 
