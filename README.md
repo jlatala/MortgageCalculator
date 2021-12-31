@@ -7,7 +7,7 @@ This is web application that calculates payment schedule for mortgage loan.
 - select from two types of mortgage loan (fixed or declining installments)
 - contribute some extra payments to your loan, to check how it may impact payment schedule
 - make extra payments mounthy or for given months
-- select whether extra payments decrease loan term or installment
+- select whether extra payments should decrease loan term or installment
 ## Installation
 Install with pip:
 
