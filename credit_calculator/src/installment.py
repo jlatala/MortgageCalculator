@@ -27,6 +27,7 @@ class Installment(dict):
     def get_rounded_total(self):
         return self.total
 
+    @round_currency
     def __add__(self, other):
         try:
             return self.total + other.total
