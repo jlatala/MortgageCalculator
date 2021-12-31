@@ -10,6 +10,7 @@ This is web application that calculates payment schedule for mortgage loan.
 - select whether extra payments should decrease loan term or installment
 ## Screenshots
 ### Mortgage loan summary
+![Screenshot](/../<screenshot>/summary.png?raw=true "Mortgage loan summary")
 ![Screenshot](/screenshots/summary.png)
 ### Charts
 ![Screenshot](/screenshots/charts.png)
