@@ -26,9 +26,16 @@ $ pip3 install -r requirements.txt
 $ python3 -m credit_calculator.web.index
 ```
 By default the app is running on http://127.0.0.1:8050/
-## Unittest
+## Tests
+### Requirements
+ - Google Chrome
+ - Chrome WebDriver
 ```
-$ python3 -m unittest
+$ pip3 install -r test-requirements.txt
+```
+### Run tests
+```
+$ pytest
 ```
 ## Reference
 - [Dash](https://dash.plotly.com/)
