@@ -22,6 +22,7 @@ basic_tab = dcc.Tab(
         html.P(children="Installment type", className="lead", id="credit-type-text"),
         dcc.RadioItems(
             id="loan-type-radio",
+            labelClassName="label-loan-type-radio",
             options=[
                 {"label": "fixed", "value": "fixed"},
                 {"label": "declining", "value": "declining"},
